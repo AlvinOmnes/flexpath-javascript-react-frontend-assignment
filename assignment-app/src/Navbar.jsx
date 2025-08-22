@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function navBar() {
+export function navBar() {
     return (
         <nav className="navbar navbar-dark bg-dark fixed-top">
             <div className="container-fluid">

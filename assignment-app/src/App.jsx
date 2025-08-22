@@ -1,4 +1,5 @@
 import React from "react";
+import navBar from "./navBar.jsx"
 
 function App() {
   return (
@@ -8,6 +9,9 @@ function App() {
         <p className="navbar-brand ms-4 nav-link">User Behavior Data</p>
       </nav>
       <hr />
+      <p>
+        //dataset-information
+      </p>
     </div>
   );
 }
