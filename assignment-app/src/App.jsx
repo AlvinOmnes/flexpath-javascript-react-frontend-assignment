@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "./navBar.jsx"
+import NavBar from "./NavBar.jsx"
 import DataInfo from "./dataInfo.jsx"
 
 function App() {
