@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function DataInfo() {
+export default function Home() {
     return (
         <div className="container">
             <h1>User Behaviour Dataset</h1>
