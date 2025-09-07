@@ -1,21 +1,32 @@
-import React from "react"
+import React, {useState} from "react";
+import SearchBar from "./SearchBar.jsx";
 
 export default function Search() {
-    //const filterTypeOptions = ["gender", "operatingSystem", "model", "behaviorclass"];
+    const filterTypeOptions = ["gender", "operatingSystem", "model", "behaviorClass"];
+    const [filterType, selectedFilter] = useState(filterTypeOptions[0]);
+    const [searchKeyword, selectedKeyword] = useState("");
 
-    //filterTypeOptions.map(item => <li>{item}</li>)
+    const resultSearch = (event) => {event.preventDefault();}
     
     return (
-        <div className="dropdown">
-            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                Dropdown button
-            </button>
-            <ul className="dropdown-menu">
-                <li><a className="dropdown-item" type="button">model</a></li>
-                <li><button className="dropdown-item" type="button">gender</button></li>
-                <li><button className="dropdown-item" type="button">operatingSystem</button></li>
-                <li><button className="dropdown-item" type="button">behaviorClass</button></li>
-            </ul>
+        <form onSubmit={resultSearch}>
+        <div className="container d-flex flex-column gap-3">
+            <div>
+                <label className="form-label">Select data point to filter search by</label>
+                <select className="form-select w-auto" 
+                value={filterType} 
+                onChange={(event) => selectedFilter(event.target.value)}
+                >
+                {filterTypeOptions.map(option => (<option key={option} value={option}>{option}</option>))}
+                </select>
+            </div>
+            <div>
+                <SearchBar 
+                keyword={searchKeyword}
+                setKeyword={selectedKeyword}
+                />
+            </div>
         </div>
+        </form>
     );
 }

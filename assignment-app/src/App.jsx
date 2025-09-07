@@ -1,22 +1,23 @@
 import React from "react";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import NavBar from "./NavBar.jsx"
 import Home from "./Home.jsx"
 import Search from "./Search.jsx"
 
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <div>
         <NavBar />
       </div>
       <hr />
       <div>
-        <Home />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<Search />} />
+          </Routes>
       </div>
-      <div>
-        <Search />
-      </div>
-    </div>
+    </BrowserRouter>
   );
 }
 
