@@ -8,12 +8,12 @@ export default function SearchBar ({keyword, setKeyword}) {
                 <input 
                 className="w-25 form-control" 
                 type="search" 
-                placeholder="Search by keyword" 
+                placeholder="Search by keyword"
+                value={keyword}
+                onChange={(event) => setKeyword(event.target.value)} 
                 />
             </div>
-            <div className="w-25">
-                <button className="btn btn-light w-100 form-control">Search</button>
-            </div>
+           
         </div>
     ); 
 }
