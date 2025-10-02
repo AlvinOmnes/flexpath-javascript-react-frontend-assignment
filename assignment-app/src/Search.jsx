@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar.jsx";
 
 export default function Search() {
@@ -6,15 +6,53 @@ export default function Search() {
     const [filterType, selectedFilter] = useState(filterTypeOptions[0]);
     const [searchKeyword, selectedKeyword] = useState("");
     const [results, setResults] = useState([]);
+    const [loading, setLoading] =useState(false);
+
+    useEffect(() => {
+        const savedFilter = localStorage.getItem("searchFilterType");
+        const savedKeyword = localStorage.getItem("searchKeyword");
+        const savedResults = localStorage.getItem("searchResults");
+
+        if (savedFilter !== null && savedFilter !== undefined) {
+            selectedFilter(savedFilter);
+        }
+        if (savedKeyword !== null && savedKeyword !== undefined) {
+            selectedKeyword(savedKeyword);
+        }
+        if (savedResults !== null && savedResults !== undefined) {
+            setResults(JSON.parse(savedResults));
+        }
+    }, []);
 
     const resultSearch = async (event) => {
         event.preventDefault();
+        setLoading(true);
+
         try {
+            await new Promise ((resolve) => setTimeout(resolve, 1000));
+
             const response = await fetch(`/api/data/search`);
             const data = await response.json();
-            setResults(data);
+            const fieldMap = {
+                gender: "Gender",
+                operatingSystem: "Operating System",
+                model: "Device Model",
+                behaviorClass: "User Behavior Class",
+            };
+            const fieldToFilter = fieldMap[filterType];
+            const filteredResults = data.filter((item) => item[fieldToFilter]?.toLowerCase().includes(searchKeyword.toLowerCase()));
+            setResults(filteredResults);
+
+            localStorage.setItem("searchFilterType", filterType);
+            localStorage.setItem("searchKeyword", searchKeyword);
+            localStorage.setItem("searchResults", JSON.stringify(filteredResults));
         }
-        catch (error) { console.error(error) };
+        catch (error) { 
+            console.error(error) 
+        }
+        finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -26,7 +64,9 @@ export default function Search() {
                         value={filterType}
                         onChange={(event) => selectedFilter(event.target.value)}
                     >
-                        {filterTypeOptions.map(option => (<option key={option} value={option}>{option}</option>))}
+                        {filterTypeOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                            ))}
                     </select>
                 </div>
                 <div>
@@ -39,7 +79,23 @@ export default function Search() {
                     <button className="btn btn-light w-100 form-control">Search</button>
                 </div>
 
-                <table className="table">
+                {loading && (
+                    <div className="text">
+                        Loading...
+                    </div>
+                )}
+
+                {results.length === 0 ? (
+                    <div className="text">
+                        No Records to Display
+                    </div>
+                ) : (
+                    <div className ="text">
+                        Displaying {results.length} Records
+                    </div>
+                )}
+
+                <table className="table table-striped">
                     <thead>
                         <tr>
                             <th scope="col">User ID</th>
@@ -47,7 +103,7 @@ export default function Search() {
                             <th scope="col">Operating System</th>
                             <th scope="col">App Usage Time (min/day)</th>
                             <th scope="col">Screen On Time (hours/day)</th>
-                            <th scope="col"> Battery Drain (mAh/day)</th>
+                            <th scope="col">Battery Drain (mAh/day)</th>
                             <th scope="col">Number of Apps Installed</th>
                             <th scope="col">Data Usage (MB/day)</th>
                             <th scope="col">Age</th>
@@ -59,12 +115,22 @@ export default function Search() {
                         {results.map((user,index) => (
                             <tr key={index}>
                                 <td>{user["User ID"]}</td>
+                                <td>{user["Device Model"]}</td>
+                                <td>{user["Operating System"]}</td>
+                                <td>{user["App Usage Time (min/day)"]}</td>
+                                <td>{user["Screen On Time (hours/day)"]}</td>
+                                <td>{user["Battery Drain (mAh/day)"]}</td>
+                                <td>{user["Number of Apps Installed"]}</td>
+                                <td>{user["Data Usage (MB/day)"]}</td>
+                                <td>{user["Age"]}</td>
+                                <td>{user["Gender"]}</td>
+                                <td>{user["User Behavior Class"]}</td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
 
-                {results.length > 0 && (
+{/*                 {results.length > 0 && (
                     <div>
                         {results.map((item, idx) =>
                             <tbody key={idx} className="">
@@ -72,7 +138,7 @@ export default function Search() {
                             </tbody>
                         )}
                     </div>
-                )}
+                )} */}
             </div>
         </form>
     );
